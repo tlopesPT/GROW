@@ -16,11 +16,15 @@ public class CBREngine {
 	// set path to myCBR projects	
 	private static String data_path = "E:\\Documents\\myCBRProjects\\GROW\\Clients\\"; //coloque o caminho do projecto cars.prj
 	// name of the project file
-	private static String projectName = "clients.prj"; //altere se necessário
+	private static String projectName = "clients_men.prj"; //altere se necessário
 	// name of the central concept 
-	private static String conceptName = "Client"; //altere se necessário
+	private static String conceptName = "Client_men"; //altere se necessário
+	// name of the central concept 
+	private static String conceptName2 = "Exercise_men"; //altere se necessário
 	// name of the csv containing the instances
-	private static String csv = "clients.csv"; //altere se necessário
+	private static String csv = "clients_men.csv"; //altere se necessário
+	// name of the csv containing the instances
+	private static String csv2 = "exercise_men.csv"; //altere se necessário
 	// set the separators that are used in the csv file
 	private static String columnseparator = ";";
 	private static String multiplevalueseparator = ",";
@@ -50,6 +54,14 @@ public class CBREngine {
 	public static void setConceptName(String conceptName) {
 		CBREngine.conceptName = conceptName;
 	}
+	
+	public static String getConceptName2() {
+		return conceptName2;
+	}
+
+	public static void setConceptName2(String conceptName2) {
+		CBREngine.conceptName2 = conceptName2;
+	}
 
 	public static String getCsv() {
 		return csv;
@@ -58,13 +70,21 @@ public class CBREngine {
 	public static void setCsv(String csv) {
 		CBREngine.csv = csv;
 	}
+	
+	public static String getCsv2() {
+		return csv2;
+	}
+
+	public static void setCsv2(String csv2) {
+		CBREngine.csv2 = csv2;
+	}
 
 	/**
 	 * This methods creates a myCBR project and loads the project from a .prj file
 	 */	
 	public Project createProjectFromPRJ(){
 
-		System.out.println("A carregar o projecto myCBR : "+data_path+ " "+projectName+" "+conceptName+" "); 
+		System.out.println("A carregar o projecto myCBR : "+data_path+ " "+projectName+" "+conceptName+" "+conceptName+" "); 
 
 		Project project = null;
 
@@ -104,8 +124,17 @@ public class CBREngine {
 			}
 			System.out.print("\n");	//console pretty print
 			Concept concept = project.getConceptByID(conceptName);
+			Concept concept2 = project.getConceptByID(conceptName2);
 			// Initialize CSV Import  
 			CSVImporter csvImporter = new CSVImporter(data_path+csv, concept);
+			
+			// Initialize CSV Import  
+			CSVImporter csvImporter2 = new CSVImporter(data_path+csv, concept2);
+			
+			/*
+			 * Import data from clients_men.csv
+			 * 
+			 */
 			// set the separators that are used in the csv file
 			csvImporter.setSeparator(columnseparator); // column separator
 			csvImporter.setSeparatorMultiple(multiplevalueseparator); //multiple value separator
@@ -117,8 +146,28 @@ public class CBREngine {
 			// do the import of the instances 
 			csvImporter.doImport();
 			// wait until the import is done
-			System.out.print("Importing ");
+			System.out.print("Importing "+csv);
 			while (csvImporter.isImporting()){
+				Thread.sleep(1000);
+				System.out.print(".");
+			}			
+			/*
+			 * Import data from exercises_men.csv
+			 * 
+			 */
+			// set the separators that are used in the csv file
+			csvImporter2.setSeparator(columnseparator); // column separator
+			csvImporter2.setSeparatorMultiple(multiplevalueseparator); //multiple value separator
+			// prepare for import
+			csvImporter2.readData();	
+			csvImporter2.checkData();
+			csvImporter2.addMissingValues();
+			csvImporter2.addMissingDescriptions();
+			// do the import of the instances 
+			csvImporter2.doImport();
+			// wait until the import is done
+			System.out.print("Importing "+csv2);
+			while (csvImporter2.isImporting()){
 				Thread.sleep(1000);
 				System.out.print(".");
 			}

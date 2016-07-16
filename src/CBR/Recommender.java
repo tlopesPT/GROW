@@ -32,6 +32,7 @@ public class Recommender {
     public Project rec;
     public DefaultCaseBase cb;
     public Concept myConcept;
+    public Concept myConcept2;
 
     public void loadengine() {
 
@@ -41,6 +42,9 @@ public class Recommender {
         cb = (DefaultCaseBase) rec.getCaseBases().get(engine.getCaseBase());
         // create a concept and get the main concept of the project; 
         myConcept = rec.getConceptByID(engine.getConceptName());
+        
+        // create a concept and get the main concept of the project; 
+        myConcept2 = rec.getConceptByID(engine.getConceptName2());
     }
 
     public boolean isInteger(String str) {
@@ -53,17 +57,27 @@ public class Recommender {
     }
 
     //Acrescente à lista de argumentos, os atributos que recebeu do utilizador e vai usar no Retrieval
-    public String solveOuery(Integer age,boolean gender,Integer height, Integer weight, Integer rArm,Integer lArm,Integer numberofcases) throws ParseException {
+    public String solveOuery(Integer age,Integer gender,Integer height, Integer weight,Integer numberofcases) throws ParseException {
         String answer = "";
         String defaultSelection = "_unknown_"; // _unknown_ or _undefined_
 
         // create a new retrieval
         Retrieval ret = new Retrieval(myConcept, cb);
+        
+        // create a new retrieval
+        Retrieval ret2 = new Retrieval(myConcept2, cb);
+        
         // specify the retrieval method
         ret.setRetrievalMethod(RetrievalMethod.RETRIEVE_SORTED);
         
+        // specify the retrieval method
+        ret2.setRetrievalMethod(RetrievalMethod.RETRIEVE_SORTED);
+        
 	// create a query instance
         Instance query = ret.getQueryInstance();
+        
+    	// create a query instance
+        Instance query2 = ret2.getQueryInstance();
      /*   
         //Atributo String/Symbol COLOR
 	SymbolDesc colorDesc = (SymbolDesc) myConcept.getAllAttributeDescs().get("Color");
@@ -73,30 +87,44 @@ public class Recommender {
             query.addAttribute(colorDesc, colorDesc.getAttribute(defaultSelection));
         }
         */
-               
+        
+        /**
+         * Value conversion to keep data set units consistent
+         */
+        /*
+        Integer heightMM = height * 1000; //converts from meter to millimeter
+        Integer weightHG = weight * 10; //converts kilogram to hectogram
+        */
+        
         //Atributo Integer Age
-        IntegerDesc ageDesc = (IntegerDesc) myConcept.getAllAttributeDescs().get("Age");
+        IntegerDesc ageDesc = (IntegerDesc) myConcept.getAllAttributeDescs().get("AGE-ANSUR88");
         query.addAttribute(ageDesc, ageDesc.getIntegerAttribute(age));
         
-        BooleanDesc genderDesc = (BooleanDesc) myConcept.getAllAttributeDescs().get("Male");
+        /*
+        BooleanDesc genderDesc = (BooleanDesc) myConcept.getAllAttributeDescs().get("GENDER ");
         query.addAttribute(genderDesc, genderDesc.getBooleanAttribute(gender));
+        */
+        
+        
+        IntegerDesc genderDesc = (IntegerDesc) myConcept.getAllAttributeDescs().get("GENDER");
+        query.addAttribute(genderDesc, genderDesc.getIntegerAttribute(gender)); //1 = male, 0 = female
         
         //Atributo Integer Height
-        IntegerDesc heightDesc = (IntegerDesc) myConcept.getAllAttributeDescs().get("Height");
+        IntegerDesc heightDesc = (IntegerDesc) myConcept.getAllAttributeDescs().get("STATURE");
         query.addAttribute(heightDesc, heightDesc.getIntegerAttribute(height));
 
         //Atributo Integer Weight
-        IntegerDesc weightDesc = (IntegerDesc) myConcept.getAllAttributeDescs().get("Weight");
+        IntegerDesc weightDesc = (IntegerDesc) myConcept.getAllAttributeDescs().get("WEIGHT");
         query.addAttribute(weightDesc, weightDesc.getIntegerAttribute(weight));
-        
-        //Atributo Integer Right Arm
-        IntegerDesc rArmDesc = (IntegerDesc) myConcept.getAllAttributeDescs().get("Right Arm");
-        query.addAttribute(rArmDesc, rArmDesc.getIntegerAttribute(rArm));
-        
-        //Atributo Integer Left Arm
-        IntegerDesc lArmDesc = (IntegerDesc) myConcept.getAllAttributeDescs().get("Left Arm");
-        query.addAttribute(lArmDesc, lArmDesc.getIntegerAttribute(lArm));
   
+        
+        //Atributo String/Symbol MANUFACTURER
+        SymbolDesc exercisDesc = (SymbolDesc) myConcept2.getAllAttributeDescs().get("EXERCISE_NAME");
+
+         
+        
+        
+        
         
         /*
         //Atributo String/Symbol MANUFACTURER
@@ -112,7 +140,8 @@ public class Recommender {
    
         // perform retrieval
         ret.start();
-
+        ArrayList<Hashtable<String, String>> liste = null;
+        
         // get the retrieval result
         List<Pair<Instance, Similarity>> result = ret.getResult();
         
@@ -122,24 +151,32 @@ public class Recommender {
             String casename = result.get(0).getFirst().getName();
             // get the similarity value
             Double sim = result.get(0).getSecond().getValue();
+            
             answer = "Melhor Caso: " + casename + " com similaridade = " + sim +".";
             answer = answer + "<br /><br />Os  " + numberofcases + " melhores casos são mostrados na tabela: "
                     + "<br /> <br /> <table border=\"1\">";
-            ArrayList<Hashtable<String, String>> liste = new ArrayList<Hashtable<String, String>>();
+            /*ArrayList<Hashtable<String, String>>*/ liste = new ArrayList<Hashtable<String, String>>();
             // if more case results are requested than we have in our case base at all:
             if (numberofcases >= cb.getCases().size()) {
                 numberofcases = cb.getCases().size();
             }
 
             for (int i = 0; i < numberofcases; i++) {
-
                 liste.add(getAttributes(result.get(i), rec.getConceptByID(engine.getConceptName())));
-                System.out.println("liste " + liste.get(i).toString());
+                String workout = liste.get(i).toString().substring(0,liste.get(i).toString().indexOf("WORKOUT="));
+                System.out.println("liste " + liste.get(i).toString() +"workout: "+workout);
                 answer = answer + "<tr><td>" + result.get(i).getFirst().getName() + "</td><td>" + liste.get(i).toString() + "</td></tr>";
             }
-        }
+        }      
 
         answer = answer + "</table>";
+        
+        
+        
+        
+        
+        
+        
         return answer;
 
     }

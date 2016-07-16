@@ -31,8 +31,6 @@ public class GROWUI extends JFrame {
 	private JTextField tfAge;
 	private JTextField tfHeight;
 	private JTextField tfWeight;
-	private JTextField tfLeftArm;
-	private JTextField tfRightArm;
 	
 
 	/**
@@ -112,24 +110,6 @@ public class GROWUI extends JFrame {
 		tfWeight.setBounds(29, 209, 108, 20);
 		panel.add(tfWeight);
 		
-		JLabel lblRightArm = new JLabel("Right Arm");
-		lblRightArm.setBounds(29, 309, 47, 14);
-		panel.add(lblRightArm);
-		
-		tfLeftArm = new JTextField();
-		tfLeftArm.setColumns(10);
-		tfLeftArm.setBounds(29, 390, 108, 20);
-		panel.add(tfLeftArm);
-		
-		JLabel lblLeftArm = new JLabel("Left Arm");
-		lblLeftArm.setBounds(29, 365, 46, 14);
-		panel.add(lblLeftArm);
-		
-		tfRightArm = new JTextField();
-		tfRightArm.setColumns(10);
-		tfRightArm.setBounds(29, 334, 108, 20);
-		panel.add(tfRightArm);
-		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(289, 21, 275, 389);
 		panel.add(scrollPane);
@@ -152,7 +132,7 @@ public class GROWUI extends JFrame {
 				/**
 				 * Regular information
 				 */
-				boolean gender;
+				Integer gender;
 				Integer age= null;
 				Integer height= null;
 				Integer weight= null;
@@ -160,14 +140,13 @@ public class GROWUI extends JFrame {
 				/**
 				 * Measurements
 				 */
-				Integer rArm= null;
-				Integer lArm= null;
+
 				
 				String sGender = cbGender.getSelectedItem().toString();
 				if("Male".equals(sGender)){
-					gender = true;
+					gender = 1;
 				} else{
-					gender = false;
+					gender = 0;
 				}
 				
 				try{					
@@ -175,8 +154,6 @@ public class GROWUI extends JFrame {
 				
 					height = Integer.parseInt(tfHeight.getText());
 					weight = Integer.parseInt(tfWeight.getText());
-					rArm = Integer.parseInt(tfRightArm.getText());
-					lArm = Integer.parseInt(tfLeftArm.getText());	
 						
 				} catch(NumberFormatException e){
 					//missing logger
@@ -185,8 +162,20 @@ public class GROWUI extends JFrame {
 				
 				
 				try{
-					String similarCases = remy.solveOuery(age,true,height,weight,rArm,lArm,5);
+					
+					/**
+					 * GUI OUTPUT
+					 */
+					
+					String similarCases = remy.solveOuery(age,gender,height,weight,5);
 					epQueryResult.setText(similarCases);
+					
+					
+					
+					
+					
+					
+					
 				}catch(Exception e){
 					
 				}
