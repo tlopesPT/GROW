@@ -17,7 +17,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
@@ -50,6 +54,7 @@ public class GROWUI extends JFrame {
 	}
 
 	public Recommender remy;
+	private JTextField textField;
 	
 	/**
 	 * Create the frame.
@@ -125,7 +130,7 @@ public class GROWUI extends JFrame {
 				
 				
 				for(int i=0;i<funcs.size();i++){
-					if((funcs.get(i).getName()).equals("default function"))
+					if((funcs.get(i).getName()).equals("default function")) //default function
 						remy.myConcept.setActiveAmalgamFct(funcs.get(i));
 				}
 				
@@ -170,7 +175,32 @@ public class GROWUI extends JFrame {
 					String similarCases = remy.solveOuery(age,gender,height,weight,5);
 					epQueryResult.setText(similarCases);
 					
+					ArrayList<String[]> wP = remy.getWorkoutPlans();
 					
+	                for (String[] arr : wP) {
+	                		System.out.println(Arrays.toString(arr));
+	                }
+					
+					int j=0;
+	                for (String[] arr : wP) {
+	                	for(String s : arr){
+	                		if(!s.equals("1") && !s.equals("0")){
+		                		JLabel lbl = new JLabel(s);
+		                		lbl.setBounds(180, 433, 108, 20);
+		                		panel.add(lbl);
+	                		}
+	                		else{
+	                			JCheckBox chckbxNewCheckBox = new JCheckBox("box");
+	                			chckbxNewCheckBox.setBounds(277, 469+j, 200, 50);
+	                			j+=10;
+	                			if(s.equals("1"))
+	                				chckbxNewCheckBox.setSelected(true);
+	                			else
+	                    			chckbxNewCheckBox.setSelected(false);
+	                			panel.add(chckbxNewCheckBox);
+	                		}
+	                	}
+	                }
 					
 					
 					
@@ -187,6 +217,9 @@ public class GROWUI extends JFrame {
 
 		btnSearch.setBounds(48, 430, 89, 23);
 		panel.add(btnSearch);
+		
+
+	
 		
 
 	}

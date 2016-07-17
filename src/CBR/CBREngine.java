@@ -3,6 +3,10 @@ package CBR;
 import de.dfki.mycbr.core.Project;
 import de.dfki.mycbr.core.model.Concept;
 import de.dfki.mycbr.io.CSVImporter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import de.dfki.mycbr.core.*;
 import de.dfki.mycbr.util.Pair;
 import de.dfki.mycbr.io.CSVImporter;
@@ -19,17 +23,21 @@ public class CBREngine {
 	private static String projectName = "clients_men.prj"; //altere se necessário
 	// name of the central concept 
 	private static String conceptName = "Client_men"; //altere se necessário
-	// name of the central concept 
-	private static String conceptName2 = "Exercise_men"; //altere se necessário
 	// name of the csv containing the instances
 	private static String csv = "clients_men.csv"; //altere se necessário
+	
+	private static String csv2 = "exercises_men.csv"; //altere se necessário
 	// name of the csv containing the instances
-	private static String csv2 = "exercise_men.csv"; //altere se necessário
-	// set the separators that are used in the csv file
 	private static String columnseparator = ";";
 	private static String multiplevalueseparator = ",";
 	// name of the case base that should be used; the default name in myCBR is CB_csvImport
 	private static String casebase = "CB_csvImport"; //altere se necessário
+	
+	
+	private static ArrayList<String[]> workoutTable; 
+	
+	
+	
 	// Getter for the Project meta data
 	public static String getCaseBase() {
 		return casebase;
@@ -55,13 +63,6 @@ public class CBREngine {
 		CBREngine.conceptName = conceptName;
 	}
 	
-	public static String getConceptName2() {
-		return conceptName2;
-	}
-
-	public static void setConceptName2(String conceptName2) {
-		CBREngine.conceptName2 = conceptName2;
-	}
 
 	public static String getCsv() {
 		return csv;
@@ -69,22 +70,23 @@ public class CBREngine {
 
 	public static void setCsv(String csv) {
 		CBREngine.csv = csv;
-	}
-	
-	public static String getCsv2() {
-		return csv2;
+	}	
+
+	public static ArrayList<String[]> getWorkoutTable() {
+		return workoutTable;
 	}
 
-	public static void setCsv2(String csv2) {
-		CBREngine.csv2 = csv2;
+	public static void setWorkoutTable(ArrayList<String[]> workoutTable) {
+		CBREngine.workoutTable = workoutTable;
 	}
+	
 
 	/**
 	 * This methods creates a myCBR project and loads the project from a .prj file
 	 */	
 	public Project createProjectFromPRJ(){
 
-		System.out.println("A carregar o projecto myCBR : "+data_path+ " "+projectName+" "+conceptName+" "+conceptName+" "); 
+		System.out.println("A carregar o projecto myCBR : "+data_path+ " "+projectName+" "+conceptName+" "); 
 
 		Project project = null;
 
@@ -101,6 +103,13 @@ public class CBREngine {
 
 			System.out.println("Erro a carregar os ficheiros do Projecto");
 		}		
+		
+		
+		
+
+		
+		
+		
 		return project;		
 	}	
 
@@ -124,12 +133,10 @@ public class CBREngine {
 			}
 			System.out.print("\n");	//console pretty print
 			Concept concept = project.getConceptByID(conceptName);
-			Concept concept2 = project.getConceptByID(conceptName2);
+
 			// Initialize CSV Import  
 			CSVImporter csvImporter = new CSVImporter(data_path+csv, concept);
 			
-			// Initialize CSV Import  
-			CSVImporter csvImporter2 = new CSVImporter(data_path+csv, concept2);
 			
 			/*
 			 * Import data from clients_men.csv
@@ -145,38 +152,32 @@ public class CBREngine {
 			csvImporter.addMissingDescriptions();
 			// do the import of the instances 
 			csvImporter.doImport();
+			
+			
+			ArrayList<String[]> a = csvImporter.getData();
+
 			// wait until the import is done
 			System.out.print("Importing "+csv);
 			while (csvImporter.isImporting()){
 				Thread.sleep(1000);
 				System.out.print(".");
-			}			
-			/*
-			 * Import data from exercises_men.csv
-			 * 
-			 */
-			// set the separators that are used in the csv file
-			csvImporter2.setSeparator(columnseparator); // column separator
-			csvImporter2.setSeparatorMultiple(multiplevalueseparator); //multiple value separator
-			// prepare for import
-			csvImporter2.readData();	
-			csvImporter2.checkData();
-			csvImporter2.addMissingValues();
-			csvImporter2.addMissingDescriptions();
-			// do the import of the instances 
-			csvImporter2.doImport();
-			// wait until the import is done
-			System.out.print("Importing "+csv2);
-			while (csvImporter2.isImporting()){
-				Thread.sleep(1000);
-				System.out.print(".");
 			}
+			
+	        for (String[] arr : a) {
+	            System.out.println(Arrays.toString(arr));
+	            System.out.println("a");
+	        }
+
 			System.out.print("\n");	//console pretty print
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+
+		
 		return project;
+
 	}
 
 	/**
@@ -204,4 +205,5 @@ public class CBREngine {
 		}
 		return project;
 	}
+
 }
