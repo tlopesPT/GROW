@@ -7,9 +7,6 @@ import de.dfki.mycbr.io.CSVImporter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import de.dfki.mycbr.core.*;
-import de.dfki.mycbr.util.Pair;
-import de.dfki.mycbr.io.CSVImporter;
 
 /**
  *  @author the cbr team 
@@ -18,21 +15,20 @@ import de.dfki.mycbr.io.CSVImporter;
 public class CBREngine {
 
 	// set path to myCBR projects	
-	private static String data_path = "E:\\Documents\\myCBRProjects\\GROW\\Clients\\"; //coloque o caminho do projecto cars.prj
+	private static String data_path = "E:\\Documents\\myCBRProjects\\GROW\\Clients\\"; 
 	// name of the project file
-	private static String projectName = "clients_men.prj"; //altere se necessário
+	private static String projectName = "clients_men.prj";
 	// name of the central concept 
-	private static String conceptName = "Client_men"; //altere se necessário
+	private static String conceptName = "Client_men"; 
 	// name of the csv containing the instances
-	private static String csv = "clients_men.csv"; //altere se necessário
-	
-	private static String csv2 = "exercises_men.csv"; //altere se necessário
+	private static String csv = "clients_men.csv"; 
+	// name of the csv containing the instances
+	private static String csv2 = "exercises_men.csv";
 	// name of the csv containing the instances
 	private static String columnseparator = ";";
 	private static String multiplevalueseparator = ",";
 	// name of the case base that should be used; the default name in myCBR is CB_csvImport
-	private static String casebase = "CB_csvImport"; //altere se necessário
-	
+	private static String casebase = "CB_csvImport";
 	
 	private static ArrayList<String[]> workoutTable; 
 	
@@ -41,6 +37,11 @@ public class CBREngine {
 	// Getter for the Project meta data
 	public static String getCaseBase() {
 		return casebase;
+	}
+	
+
+	public static String getDataPath() {
+		return data_path;
 	}
 
 	public static void setCasebase(String casebase) {
@@ -71,6 +72,10 @@ public class CBREngine {
 	public static void setCsv(String csv) {
 		CBREngine.csv = csv;
 	}	
+	
+	public static String getCsv2() {
+		return csv2;
+	}
 
 	public static ArrayList<String[]> getWorkoutTable() {
 		return workoutTable;
@@ -104,12 +109,6 @@ public class CBREngine {
 			System.out.println("Erro a carregar os ficheiros do Projecto");
 		}		
 		
-		
-		
-
-		
-		
-		
 		return project;		
 	}	
 
@@ -137,7 +136,6 @@ public class CBREngine {
 			// Initialize CSV Import  
 			CSVImporter csvImporter = new CSVImporter(data_path+csv, concept);
 			
-			
 			/*
 			 * Import data from clients_men.csv
 			 * 
@@ -153,8 +151,6 @@ public class CBREngine {
 			// do the import of the instances 
 			csvImporter.doImport();
 			
-			
-			ArrayList<String[]> a = csvImporter.getData();
 
 			// wait until the import is done
 			System.out.print("Importing "+csv);
@@ -163,10 +159,6 @@ public class CBREngine {
 				System.out.print(".");
 			}
 			
-	        for (String[] arr : a) {
-	            System.out.println(Arrays.toString(arr));
-	            System.out.println("a");
-	        }
 
 			System.out.print("\n");	//console pretty print
 		} catch (Exception e) {
